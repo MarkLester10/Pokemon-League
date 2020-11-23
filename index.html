@@ -1,0 +1,105 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Slayer</title>
+   <link rel="stylesheet" href="css/foundation.min.css">
+    
+    <link rel="stylesheet" href="css/app.css">
+
+</head>
+<body>
+    <div class="banner">
+        <img src="./Pokemon-Logo.png" alt=""> <span>League</span>
+    </div>
+<div id="app">
+    <section class="battle-area">
+        <div>
+            <h1 v-if="isPicking" class="text-center">Picking . . .</h1>
+            <div class="main-pokemon" :style="currentPokemon.bgColor" v-else>
+                <img :src="`https://pokeres.bastionbot.org/images/pokemon/${currentPokemon.id}.png`"/>
+                <h3 class="name text-center">{{ currentPokemon.name.toUpperCase() }}</h3>
+            </div>
+            <div class="healthbar" v-if="!isPicking" style="border-radius: 20px;">
+                <div class="healthbar text-center" :class="{orange:playerHealth <=50, red:playerHealth <=15}" 
+                style="background-color: #5dce46; margin: 0; color: white; border-radius: 20px; "
+                :style="{width:playerHealth + '%'}">
+                    {{ playerHealth }}%
+                </div>
+            </div>
+        </div>
+        <div>
+            <h1 v-if="isPicking" class="text-center">Picking . . .</h1>
+            <div class="main-pokemon" v-else>
+                <img :src="`https://pokeres.bastionbot.org/images/pokemon/${contenderPokemon.id}.png`"/>
+                <h3 class="name text-center">{{ contenderPokemon.name.toUpperCase() }}</h3>
+            </div>
+            <div class="healthbar" style="border-radius: 20px;" v-if="!isPicking">
+                <div class="healthbar text-center"  :class="{orange:monsterHealth <=50, red:monsterHealth <=15}"
+                style="background-color: #5dce46; margin: 0; color: white; border-radius: 20px; "
+                :style="{width:monsterHealth + '%'}">
+                    {{ monsterHealth }}%
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="row controls" v-if="gameIsRunning && !isPicking" >
+        <div class="small-12 columns">
+            <button id="attack" @click="attack">ATTACK</button>
+            <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
+            <button id="heal" @click="heal">HEAL</button>
+            <button id="give-up" @click="giveUp">GIVE UP</button>
+        </div>
+    </div>
+    <section class="row log" v-if="gameIsRunning && !isPicking">
+        <div class="small-12 columns">
+            <h3>Logs</h3>
+            <ul>
+                <li v-for="turn in turns" 
+                :class="{'player-turn':turn.isPlayer, 'monster-turn':!turn.isPlayer}">
+                    {{ turn.message }}
+                </li>
+            </ul>
+        </div>
+    </section>
+    
+
+    <!-- Choose you hero -->
+    <section class="row" v-if="isPicking" style="margin-top:20px">
+        <div class="small-12 columns">
+            <h1 class="text-center">Pick your Pokemon</h1>
+            <div class="pokemons">
+                <div class="pokemon" v-for="pokemon in pokemons" @click="setCurrentPokemon(pokemon)">
+                    <div class="image-container">
+                        <img :src="`https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png`"/>
+                    </div>
+                    <div class="info">
+                        <h3 class="name">{{pokemon.name.toUpperCase() }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal" v-if="modal">
+        <div class="main-modal">
+            <img class="pika" src="./pikachu.gif" alt="Pikachu">
+            <h1>Congratulations <span>{{ winner.name.toUpperCase() }}</span></h1>
+        <div class="modal-image">
+            <img :src="`https://pokeres.bastionbot.org/images/pokemon/${winner.id}.png`" alt="">
+        </div>
+        <p>
+            That was an awesome fight! Keep it up and make to the top of the League.
+        </p>
+        <button id="start" @click="resetGame">Start New Game</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
